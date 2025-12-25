@@ -11,7 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.domain.UserRole;
+import com.ecommerce.entity.Seller;
 import com.ecommerce.entity.User;
+import com.ecommerce.repository.SellerRepository;
 import com.ecommerce.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,12 +24,18 @@ public class CustomUserServiceImpl implements UserDetailsService {
 	
 	private final UserRepository userRepository;
 	private static final String SELLER_PREFIX = "seller_";
+	private final SellerRepository sellerRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		if(username.startsWith(SELLER_PREFIX)) {
+			String actualUsername = username.substring(SELLER_PREFIX.length());
+			Seller seller = sellerRepository.findByEmail(actualUsername);
 			
+			if(seller != null) {
+				return buildUserDetails(seller.getEmail(), seller.getPassword(), seller.getRole());
+			}
 		}else {
 			User user = userRepository.findByEmail(username);
 			if(user != null) {

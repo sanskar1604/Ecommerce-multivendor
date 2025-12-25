@@ -4,5 +4,6 @@ import com.ecommerce.response.SignupRequest;
 
 public interface AuthService {
 
-	String createUser(SignupRequest request);
+	void sentLoginAndSignupOtp(String email) throws Exception;
+	String createUser(SignupRequest request) throws Exception;
 }

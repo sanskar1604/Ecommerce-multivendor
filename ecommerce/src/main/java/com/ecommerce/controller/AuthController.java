@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.domain.UserRole;
 import com.ecommerce.entity.User;
+import com.ecommerce.entity.VerificationCode;
+import com.ecommerce.response.ApiResponse;
 import com.ecommerce.response.AuthResponse;
 import com.ecommerce.response.SignupRequest;
 import com.ecommerce.service.AuthService;
@@ -22,7 +24,7 @@ public class AuthController {
 	private final AuthService authService;
 
 	@PostMapping("/signup")
-	public ResponseEntity<AuthResponse> createUserHandler(@RequestBody SignupRequest request){
+	public ResponseEntity<AuthResponse> createUserHandler(@RequestBody SignupRequest request) throws Exception{
 		
 		String jwt = authService.createUser(request);
 		
@@ -32,6 +34,16 @@ public class AuthController {
 		authResponse.setRole(UserRole.ROLE_CUSTOMER);
 		
 		return ResponseEntity.ok(authResponse);
+	}
+	
+	@PostMapping("/send/login-signup-otp")
+	public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody VerificationCode code) throws Exception{
 		
+		authService.sentLoginAndSignupOtp(code.getEmail());
+		
+		ApiResponse apiResponse = new ApiResponse();
+		apiResponse.setMessage("Otp sent successfully...");
+		
+		return ResponseEntity.ok(apiResponse);
 	}
 }
