@@ -15,16 +15,20 @@ import com.ecommerce.response.AuthResponse;
 import com.ecommerce.response.SignupRequest;
 import com.ecommerce.service.AuthService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Auth", description = "API for authentication and login/signup")
 public class AuthController {
 	
 	private final AuthService authService;
 
 	@PostMapping("/signup")
+	@Operation(summary = "Create user")
 	public ResponseEntity<AuthResponse> createUserHandler(@RequestBody SignupRequest request) throws Exception{
 		
 		String jwt = authService.createUser(request);
@@ -38,6 +42,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/send/login-signup-otp")
+	@Operation(summary = "Sent OTP handler")
 	public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody VerificationCode code) throws Exception{
 		
 		authService.sentLoginAndSignupOtp(code.getEmail());
@@ -49,6 +54,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/signing")
+	@Operation(summary = "Login Handler")
 	public ResponseEntity<AuthResponse> loginHandler(@RequestBody LoginRequest request) throws Exception{
 		
 		AuthResponse authResponse = authService.signing(request);
