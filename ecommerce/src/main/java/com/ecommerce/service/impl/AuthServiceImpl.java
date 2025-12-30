@@ -17,9 +17,11 @@ import org.springframework.stereotype.Service;
 import com.ecommerce.config.JwtProvider;
 import com.ecommerce.domain.UserRole;
 import com.ecommerce.entity.Cart;
+import com.ecommerce.entity.Seller;
 import com.ecommerce.entity.User;
 import com.ecommerce.entity.VerificationCode;
 import com.ecommerce.repository.CartRepository;
+import com.ecommerce.repository.SellerRepository;
 import com.ecommerce.repository.UserRepository;
 import com.ecommerce.repository.VerificationCodeRepository;
 import com.ecommerce.request.LoginRequest;
@@ -42,20 +44,31 @@ public class AuthServiceImpl implements AuthService{
 	private final VerificationCodeRepository verificationCodeRepository;
 	private final EmailService emailService; 
 	private final CustomUserServiceImpl customUserServiceImpl;
+	private final SellerRepository sellerRepository;
 	
 	
 	@Override
-	public void sentLoginAndSignupOtp(String email) throws Exception {
+	public void sentLoginAndSignupOtp(String email, UserRole role) throws Exception {
 		
+//		String SELLER_PREFIX = "seller_";
 		String SIGNING_PREFIX = "signing_";
 		
 		if(email.startsWith(SIGNING_PREFIX)) {
 			email = email.substring(SIGNING_PREFIX.length());
 			
-			User user = userRepository.findByEmail(email);
-			if(user == null) {
-				throw new Exception ("user not exist with provided email...");
+			if(role.equals(UserRole.ROLE_SELLER)) {
+				Seller seller = sellerRepository.findByEmail(email);
+				if(seller == null) {
+					throw new Exception ("Seller not exist with provided email...");
+				}
 			}
+			else {
+				User user = userRepository.findByEmail(email);
+				if(user == null) {
+					throw new Exception ("user not exist with provided email...");
+				}
+			}
+			
 		}
 		
 		VerificationCode isExist = verificationCodeRepository.findByEmail(email);
