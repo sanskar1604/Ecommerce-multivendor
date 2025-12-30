@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ecommerce.domain.AccountStatus;
 import com.ecommerce.domain.UserRole;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -54,7 +55,7 @@ public class Seller {
 	
 	private UserRole role = UserRole.ROLE_SELLER;
 	
-	private boolean isEmailVerified = false;
+	private Boolean isEmailVerified = false;
 	
 	private AccountStatus accountStatus = AccountStatus.PENDING_VERIFICATION;
 	

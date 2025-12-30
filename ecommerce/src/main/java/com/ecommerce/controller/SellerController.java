@@ -20,6 +20,7 @@ import com.ecommerce.domain.AccountStatus;
 import com.ecommerce.entity.Seller;
 import com.ecommerce.entity.SellerReport;
 import com.ecommerce.entity.VerificationCode;
+import com.ecommerce.exception.SellerException;
 import com.ecommerce.repository.VerificationCodeRepository;
 import com.ecommerce.request.LoginRequest;
 import com.ecommerce.response.ApiResponse;
@@ -30,8 +31,9 @@ import com.ecommerce.service.SellerService;
 import com.ecommerce.utils.OtpUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -59,6 +61,7 @@ public class SellerController {
 //		}
 		
 		req.setEmail("seller_"+email);
+		System.out.println("seller login email: " + email);
 		AuthResponse authResponse = authService.signing(req);
 		
 		return ResponseEntity.ok(authResponse);
@@ -73,15 +76,15 @@ public class SellerController {
 		if(verificationCode == null || !verificationCode.getOtp().equals(sellerOtp)) {
 			throw new Exception("wrong otp...");
 		}
-		Seller seller = sellerService.verifyEmail(verificationCode.getOtp(), sellerOtp);
+		Seller seller = sellerService.verifyEmail(verificationCode.getEmail(), sellerOtp);
 		
 		return ResponseEntity.ok(seller);
 	}
 	
 	@PostMapping
 	@Operation(summary = "Create Seller")
-	public ResponseEntity<Seller> createSeller(@RequestBody Seller seller) throws Exception{
-		
+	public ResponseEntity<Seller> createSeller(@RequestBody Seller seller) throws SellerException, MessagingException{
+		System.out.println("Seller email in controller" + seller.getSellerName());
 		Seller savedSeller = sellerService.createSeller(seller);
 		
 		String otp = OtpUtil.generateOtp();
@@ -104,7 +107,7 @@ public class SellerController {
 	
 	@GetMapping("/{id}")
 	@Operation(summary = "Get Seller by sellerId")
-	public ResponseEntity<Seller> getSellerById(@PathVariable Long id) throws Exception{
+	public ResponseEntity<Seller> getSellerById(@PathVariable Long id) throws SellerException{
 		return ResponseEntity.ok(sellerService.getSellerById(id));
 	}
 	
@@ -116,7 +119,7 @@ public class SellerController {
 	}
 	
 //	@GetMapping("/report")
-//	public ResponseEntity<SellerReport> getSellerReport(@RequestHeader("Authorization") String jwt) throws Exception{
+//	public ResponseEntity<SellerReport> getSellerReport(@RequestHeader("Authorization") String jwt) throws SellerException{
 //		String email = jwtProvider.getEmailFromToken(jwt);
 //		Seller seller = sellerService.getSellerByEmail(email);
 //		SellerReport report = sellerReportService.getSellerReport(seller);
@@ -125,14 +128,14 @@ public class SellerController {
 	
 	@GetMapping
 	@Operation(summary = "Get all Sellers")
-	public ResponseEntity<List<Seller>> getAllSeller(@RequestParam(required=false) AccountStatus accountStatus) throws Exception{
+	public ResponseEntity<List<Seller>> getAllSeller(@RequestParam(required=false) AccountStatus accountStatus) throws SellerException{
 		List<Seller> sellers = sellerService.getAllSellers(accountStatus);
 		return new ResponseEntity<>(sellers, HttpStatus.OK);
 	}
 	
 	@PutMapping
 	@Operation(summary = "Update Seller")
-	public ResponseEntity<Seller> updateSeller(@RequestHeader("Authorization") String jwt, @RequestBody Seller seller) throws Exception{
+	public ResponseEntity<Seller> updateSeller(@RequestHeader("Authorization") String jwt, @RequestBody Seller seller) throws SellerException{
 		Seller profile = sellerService.getSellerProfile(jwt);
 		Seller updatedSeller = sellerService.updateSeller(seller, profile.getId());
 		return new ResponseEntity<>(updatedSeller, HttpStatus.OK);
@@ -140,7 +143,7 @@ public class SellerController {
 	
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Delete Seller by sellerId")
-	public ResponseEntity<ApiResponse> deleteSeller(@PathVariable Long id) throws Exception{
+	public ResponseEntity<ApiResponse> deleteSeller(@PathVariable Long id) throws SellerException{
 		sellerService.deleteSeller(id);
 		ApiResponse apiResponse = new ApiResponse();
 		apiResponse.setMessage("Seller deleted successfully...");

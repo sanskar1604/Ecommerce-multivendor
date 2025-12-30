@@ -4,24 +4,25 @@ import java.util.List;
 
 import com.ecommerce.domain.AccountStatus;
 import com.ecommerce.entity.Seller;
+import com.ecommerce.exception.SellerException;
 
 public interface SellerService {
 
-	Seller getSellerProfile(String jwt) throws Exception;
+	Seller getSellerProfile(String jwt) throws SellerException;
 	
-	Seller createSeller(Seller seller) throws Exception;
+	Seller createSeller(Seller seller) throws SellerException;
 	
-	Seller getSellerById(Long sellerId) throws Exception;
+	Seller getSellerById(Long sellerId) throws SellerException;
 	
-	Seller getSellerByEmail(String email) throws Exception;
+	Seller getSellerByEmail(String email) throws SellerException;
 	
 	List<Seller> getAllSellers(AccountStatus accountStatus);
 	
-	Seller updateSeller(Seller seller, Long sellerId) throws Exception;
+	Seller updateSeller(Seller seller, Long sellerId) throws SellerException;
 	
-	void deleteSeller(Long sellerId) throws Exception;
+	void deleteSeller(Long sellerId) throws SellerException;
 	
-	Seller verifyEmail(String email, String otp) throws Exception;
+	Seller verifyEmail(String email, String otp) throws SellerException;
 	
-	Seller updateSellerAccountStatus(Long sellerId, AccountStatus accountStatus) throws Exception;
+	Seller updateSellerAccountStatus(Long sellerId, AccountStatus accountStatus) throws SellerException;
 }
