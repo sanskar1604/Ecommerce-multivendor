@@ -11,7 +11,7 @@ import com.ecommerce.entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
-//	List<Product> findBySellerid(Long sellerId);
+	List<Product> findBySeller_Id(Long sellerId);
 	
 	@Query("""
 		    SELECT p FROM Product p

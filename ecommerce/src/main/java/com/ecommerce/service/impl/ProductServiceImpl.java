@@ -163,8 +163,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<Product> getProductBySellerId(Long sellerId) {
-		// TODO Auto-generated method stub
-		return null;
+		return productRepository.findBySeller_Id(sellerId);
 	}
 
 }
