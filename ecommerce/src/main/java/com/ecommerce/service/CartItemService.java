@@ -7,7 +7,7 @@ public interface CartItemService {
 
 	CartItem updateCartItem(Long userId, Long id, CartItem cartItem) throws CartItemException;
 	
-	void removeCartItem(Long userId, Long cartItemId);
+	void removeCartItem(Long userId, Long cartItemId) throws CartItemException;
 	
-	CartItem findCartItemById(Long cartItemId);
+	CartItem findCartItemById(Long cartItemId) throws CartItemException;
 }

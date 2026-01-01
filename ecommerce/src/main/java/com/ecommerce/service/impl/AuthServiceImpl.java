@@ -20,6 +20,8 @@ import com.ecommerce.entity.Cart;
 import com.ecommerce.entity.Seller;
 import com.ecommerce.entity.User;
 import com.ecommerce.entity.VerificationCode;
+import com.ecommerce.exception.SellerException;
+import com.ecommerce.exception.UserException;
 import com.ecommerce.repository.CartRepository;
 import com.ecommerce.repository.SellerRepository;
 import com.ecommerce.repository.UserRepository;
@@ -31,6 +33,7 @@ import com.ecommerce.service.AuthService;
 import com.ecommerce.service.EmailService;
 import com.ecommerce.utils.OtpUtil;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -48,7 +51,7 @@ public class AuthServiceImpl implements AuthService{
 	
 	
 	@Override
-	public void sentLoginAndSignupOtp(String email, UserRole role) throws Exception {
+	public void sentLoginAndSignupOtp(String email, UserRole role) throws SellerException, UserException, MessagingException {
 		
 //		String SELLER_PREFIX = "seller_";
 		String SIGNING_PREFIX = "signing_";
@@ -59,13 +62,13 @@ public class AuthServiceImpl implements AuthService{
 			if(role.equals(UserRole.ROLE_SELLER)) {
 				Seller seller = sellerRepository.findByEmail(email);
 				if(seller == null) {
-					throw new Exception ("Seller not exist with provided email...");
+					throw new SellerException ("Seller not exist with provided email...");
 				}
 			}
 			else {
 				User user = userRepository.findByEmail(email);
 				if(user == null) {
-					throw new Exception ("user not exist with provided email...");
+					throw new UserException ("user not exist with provided email...");
 				}
 			}
 			
@@ -93,12 +96,12 @@ public class AuthServiceImpl implements AuthService{
 	}
 
 	@Override
-	public String createUser(SignupRequest request) throws Exception {
+	public String createUser(SignupRequest request) throws UserException {
 		
 		VerificationCode verificationCode = verificationCodeRepository.findByEmail(request.getEmail());
 		
 		if(verificationCode == null || !verificationCode.getOtp().equals(request.getOtp())) {
-			throw new Exception("wrong otp...");
+			throw new UserException("wrong otp...");
 		}
 		
 		
@@ -106,7 +109,7 @@ public class AuthServiceImpl implements AuthService{
 		User user = userRepository.findByEmail(request.getEmail());
 		
 		if(user != null) {
-			throw new Exception("User already registered");
+			throw new UserException("User already registered");
 		}
 		
 		User createdUser = new User();
@@ -151,7 +154,7 @@ public class AuthServiceImpl implements AuthService{
 		return authResponse;
 	}
 
-	private Authentication authenticate(String username, String otp) throws Exception {
+	private Authentication authenticate(String username, String otp) throws Exception, UserException {
 		UserDetails userDetails = customUserServiceImpl.loadUserByUsername(username);
 		
 		String SELLER_PREFIX = "seller_";
@@ -166,7 +169,7 @@ public class AuthServiceImpl implements AuthService{
 		VerificationCode verificationCode = verificationCodeRepository.findByEmail(username);
 		
 		if(verificationCode == null || !verificationCode.getOtp().equals(otp)) {
-			throw new Exception("Wrong OTP");
+			throw new UserException("Wrong OTP");
 		}
 		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 	}

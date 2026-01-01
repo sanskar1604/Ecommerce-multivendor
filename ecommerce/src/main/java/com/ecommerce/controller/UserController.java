@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.entity.User;
+import com.ecommerce.exception.UserException;
 import com.ecommerce.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +24,7 @@ public class UserController {
 	
 	@GetMapping("/profile")
 	@Operation(summary = "Get user profile")
-	public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String jwt) throws Exception{
+	public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String jwt) throws UserException{
 	
 		return ResponseEntity.ok(userService.findUserByJwtToken(jwt));
 	}

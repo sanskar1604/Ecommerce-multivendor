@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecommerce.domain.UserRole;
 import com.ecommerce.entity.User;
 import com.ecommerce.entity.VerificationCode;
+import com.ecommerce.exception.UserException;
 import com.ecommerce.request.LoginOtpRequest;
 import com.ecommerce.request.LoginRequest;
 import com.ecommerce.response.ApiResponse;
@@ -30,7 +31,7 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	@Operation(summary = "Create user")
-	public ResponseEntity<AuthResponse> createUserHandler(@RequestBody SignupRequest request) throws Exception{
+	public ResponseEntity<AuthResponse> createUserHandler(@RequestBody SignupRequest request) throws UserException{
 		
 		String jwt = authService.createUser(request);
 		

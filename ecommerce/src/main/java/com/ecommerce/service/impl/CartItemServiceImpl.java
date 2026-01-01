@@ -33,15 +33,22 @@ public class CartItemServiceImpl implements CartItemService {
 	}
 
 	@Override
-	public void removeCartItem(Long userId, Long cartItemId) {
-		// TODO Auto-generated method stub
+	public void removeCartItem(Long userId, Long cartItemId) throws CartItemException {
+		CartItem cartItem = findCartItemById(cartItemId);
+		
+		User cartItemUser = cartItem.getCart().getUser();
+		
+		if(cartItemUser.getId().equals(userId)) {
+			cartItemRepository.delete(cartItem);
+		}else {
+			throw new CartItemException("You can't delete this item...");
+		}
 		
 	}
 
 	@Override
-	public CartItem findCartItemById(Long cartItemId) {
-		// TODO Auto-generated method stub
-		return null;
+	public CartItem findCartItemById(Long cartItemId) throws CartItemException {
+		return cartItemRepository.findById(cartItemId).orElseThrow(() -> new CartItemException("cart item not found with id: " + cartItemId));
 	}
 
 }

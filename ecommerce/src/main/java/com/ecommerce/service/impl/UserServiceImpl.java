@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.ecommerce.config.JwtProvider;
 import com.ecommerce.entity.User;
+import com.ecommerce.exception.UserException;
 import com.ecommerce.repository.UserRepository;
 import com.ecommerce.service.UserService;
 
@@ -17,7 +18,7 @@ public class UserServiceImpl implements UserService{
 	private final JwtProvider jwtProvider;
 
 	@Override
-	public User findUserByJwtToken(String jwt) throws Exception {
+	public User findUserByJwtToken(String jwt) throws UserException {
 		String email = jwtProvider.getEmailFromToken(jwt);
 		
 		User user = this.findUserByEmail(email);
@@ -26,11 +27,11 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public User findUserByEmail(String email) throws Exception {
+	public User findUserByEmail(String email) throws UserException {
 		User user = userRepository.findByEmail(email);
 		
 		if(user == null) {
-			throw new Exception("User not found with email: " + email);
+			throw new UserException("User not found with email: " + email);
 		}
 		
 		return user;
