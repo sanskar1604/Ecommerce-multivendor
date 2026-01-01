@@ -27,6 +27,7 @@ import com.ecommerce.response.ApiResponse;
 import com.ecommerce.response.AuthResponse;
 import com.ecommerce.service.AuthService;
 import com.ecommerce.service.EmailService;
+import com.ecommerce.service.SellerReportService;
 import com.ecommerce.service.SellerService;
 import com.ecommerce.utils.OtpUtil;
 
@@ -47,6 +48,7 @@ public class SellerController {
 	private final SellerService sellerService;
 	private final EmailService emailService;
 	private final JwtProvider jwtProvider;
+	private final SellerReportService sellerReportService; 
 	
 
 	@PostMapping("/login")
@@ -118,13 +120,13 @@ public class SellerController {
 		return new ResponseEntity<>(seller, HttpStatus.OK);
 	}
 	
-//	@GetMapping("/report")
-//	public ResponseEntity<SellerReport> getSellerReport(@RequestHeader("Authorization") String jwt) throws SellerException{
+	@GetMapping("/report")
+	public ResponseEntity<SellerReport> getSellerReport(@RequestHeader("Authorization") String jwt) throws SellerException{
 //		String email = jwtProvider.getEmailFromToken(jwt);
-//		Seller seller = sellerService.getSellerByEmail(email);
-//		SellerReport report = sellerReportService.getSellerReport(seller);
-//		return new ResponseEntity<>(report, HttpStatus.OK);
-//	}
+		Seller seller = sellerService.getSellerProfile(jwt);
+		SellerReport report = sellerReportService.getSellerReport(seller);
+		return new ResponseEntity<>(report, HttpStatus.OK);
+	}
 	
 	@GetMapping
 	@Operation(summary = "Get all Sellers")
