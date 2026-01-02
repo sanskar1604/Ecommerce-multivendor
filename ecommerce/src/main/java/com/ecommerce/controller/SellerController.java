@@ -121,6 +121,7 @@ public class SellerController {
 	}
 	
 	@GetMapping("/report")
+	@Operation(summary = "Get seller report")
 	public ResponseEntity<SellerReport> getSellerReport(@RequestHeader("Authorization") String jwt) throws SellerException{
 //		String email = jwtProvider.getEmailFromToken(jwt);
 		Seller seller = sellerService.getSellerProfile(jwt);

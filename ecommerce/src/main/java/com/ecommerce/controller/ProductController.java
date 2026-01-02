@@ -14,26 +14,32 @@ import com.ecommerce.entity.Product;
 import com.ecommerce.exception.ProductException;
 import com.ecommerce.service.ProductService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
+@Tag(name = "Product", description = "API for managing products")
 public class ProductController {
 
 	private final ProductService productService;
 	
 	@GetMapping("/{productId}")
+	@Operation(summary = "Get product by productId")
 	public ResponseEntity<Product> getProductById(@PathVariable Long productId) throws ProductException{
 		return ResponseEntity.ok(productService.findProductById(productId));
 	}
 	
 	@GetMapping("/search")
+	@Operation(summary = "Search product")
 	public ResponseEntity<List<Product>> searchProduct(@RequestParam(required = false) String query){
 		return ResponseEntity.ok(productService.searchProducts(query));
 	}
 	
 	@GetMapping
+	@Operation(summary = "Get all products")
 	public ResponseEntity<Page<Product>> getAllProduct(@RequestParam(required = false) String category,
 			@RequestParam(required = false) String brand,
 			@RequestParam(required = false) String color,

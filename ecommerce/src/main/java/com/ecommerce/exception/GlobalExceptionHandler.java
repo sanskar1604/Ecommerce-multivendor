@@ -60,4 +60,14 @@ public class GlobalExceptionHandler {
 		
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(PaymentOrderException.class)
+	public ResponseEntity<ErrorDetails> PaymentOrderExceptionHandler(PaymentOrderException ex, WebRequest request){
+		ErrorDetails errorDetails = new ErrorDetails();
+		errorDetails.setError(ex.getMessage());
+		errorDetails.setDetails(request.getDescription(false));
+		errorDetails.setTimeStamp(LocalDateTime.now());
+		
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
 }
