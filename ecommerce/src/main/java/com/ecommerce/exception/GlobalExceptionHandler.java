@@ -70,4 +70,44 @@ public class GlobalExceptionHandler {
 		
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(ReviewException.class)
+	public ResponseEntity<ErrorDetails> ReviewExceptionHandler(ReviewException ex, WebRequest request){
+		ErrorDetails errorDetails = new ErrorDetails();
+		errorDetails.setError(ex.getMessage());
+		errorDetails.setDetails(request.getDescription(false));
+		errorDetails.setTimeStamp(LocalDateTime.now());
+		
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(CoupanException.class)
+	public ResponseEntity<ErrorDetails> CoupanExceptionHandler(CoupanException ex, WebRequest request){
+		ErrorDetails errorDetails = new ErrorDetails();
+		errorDetails.setError(ex.getMessage());
+		errorDetails.setDetails(request.getDescription(false));
+		errorDetails.setTimeStamp(LocalDateTime.now());
+		
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(HomeCategoryException.class)
+	public ResponseEntity<ErrorDetails> HomeCategoryExceptionHandler(HomeCategoryException ex, WebRequest request){
+		ErrorDetails errorDetails = new ErrorDetails();
+		errorDetails.setError(ex.getMessage());
+		errorDetails.setDetails(request.getDescription(false));
+		errorDetails.setTimeStamp(LocalDateTime.now());
+		
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(DealException.class)
+	public ResponseEntity<ErrorDetails> DealExceptionHandler(DealException ex, WebRequest request){
+		ErrorDetails errorDetails = new ErrorDetails();
+		errorDetails.setError(ex.getMessage());
+		errorDetails.setDetails(request.getDescription(false));
+		errorDetails.setTimeStamp(LocalDateTime.now());
+		
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
 }

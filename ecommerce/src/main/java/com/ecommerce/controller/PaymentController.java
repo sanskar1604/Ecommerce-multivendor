@@ -20,6 +20,7 @@ import com.ecommerce.response.PaymentLinkResponse;
 import com.ecommerce.service.PaymentService;
 import com.ecommerce.service.SellerReportService;
 import com.ecommerce.service.SellerService;
+import com.ecommerce.service.TransactionService;
 import com.ecommerce.service.UserService;
 import com.razorpay.RazorpayException;
 
@@ -36,6 +37,7 @@ public class PaymentController {
 	private final UserService userService;
 	private final SellerService sellerService;
 	private final SellerReportService sellerReportService;
+	private final TransactionService transactionService;
 	
 	public ResponseEntity<ApiResponse> paymentSuccessHandler(@PathVariable String paymentId,
 			@RequestParam String paymentLinkId,
@@ -50,7 +52,7 @@ public class PaymentController {
 		
 		if(paymentSuccess) {
 			for(Order order: paymentOrder.getOrders()) {
-//				transactionService.createTransaction(order);
+				transactionService.createTransaction(order);
 				Seller seller = sellerService.getSellerById(order.getSellerId());
 				SellerReport report = sellerReportService.getSellerReport(seller);
 				report.setTotalOrders(report.getTotalOrders()+1);
